@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+from collections import deque
 
 class SearchProblem:
     """
@@ -86,30 +87,72 @@ def depthFirstSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    stack = util.Stack()
+    visited = []
+    path = []
+    cur = problem.getStartState()
+    while not problem.isGoalState(cur):
+        for i in problem.getSuccessors(cur):
+            if i[0] not in visited:
+                stack.push((i, path))
+                visited.append(i)
+        cur, path = stack.pop()
+        path.append(cur)
+    return path
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    queue = util.Queue()
+    visited = []
+    path = []
+    cur = problem.getStartState()
+    while not problem.isGoalState(cur):
+        for i in problem.getSuccessors(cur):
+            if i[0] not in visited:
+                queue.push((i, path))
+                visited.append(i)
+        cur, path = queue.pop()
+        path.append(cur)
+    return path
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    queue = util.PriorityQueue()
+    visited = []
+    path = []
+    cur = problem.getStartState()
+    while not problem.isGoalState(cur):
+        for i in problem.getSuccessors(cur):
+            if i[0] not in visited:
+                queue.push((i, len(path), path))
+                visited.append(i)
+        cur, path = queue.pop()
+        path.append(cur)
+    return path
 
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
-    return 0
+    if problem == None:
+        return 0
+    return util.manhattanDistance(state, problem.goal)
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    queue = util.PriorityQueue()
+    visited = []
+    path = []
+    cur = problem.getStartState()
+    while not problem.isGoalState(cur):
+        for i in problem.getSuccessors(cur):
+            if i[0] not in visited:
+                queue.push((i, len(path) + heuristic(i, problem), path))
+                visited.append(i)
+        cur, path = queue.pop()
+        path.append(cur)
+    return path
 
 
 # Abbreviations
